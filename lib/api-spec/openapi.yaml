@@ -1,22 +1,30 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Jamila - Algeria Health & Beauty Marketplace API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: listings
+    description: Business listing operations
+  - name: categories
+    description: Category operations
+  - name: reviews
+    description: Review operations
+  - name: wilayas
+    description: Algerian wilaya (province) operations
+  - name: search
+    description: Search operations
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +32,205 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /wilayas:
+    get:
+      operationId: getWilayas
+      tags: [wilayas]
+      summary: Get all Algerian wilayas
+      responses:
+        "200":
+          description: List of wilayas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Wilaya"
+
+  /categories:
+    get:
+      operationId: getCategories
+      tags: [categories]
+      summary: Get all categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+  /listings:
+    get:
+      operationId: getListings
+      tags: [listings]
+      summary: Get listings with filters
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: wilaya
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: featured
+          in: query
+          schema:
+            type: boolean
+        - name: minRating
+          in: query
+          schema:
+            type: number
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Paginated listings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListingsResponse"
+    post:
+      operationId: createListing
+      tags: [listings]
+      summary: Create a new listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateListing"
+      responses:
+        "201":
+          description: Created listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+
+  /listings/{id}:
+    get:
+      operationId: getListingById
+      tags: [listings]
+      summary: Get listing by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Listing detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListingDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /listings/{id}/reviews:
+    get:
+      operationId: getListingReviews
+      tags: [reviews]
+      summary: Get reviews for a listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Review"
+    post:
+      operationId: createReview
+      tags: [reviews]
+      summary: Submit a review
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReview"
+      responses:
+        "201":
+          description: Created review
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+
+  /search:
+    get:
+      operationId: searchListings
+      tags: [search]
+      summary: Search listings
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: wilaya
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+
+  /stats:
+    get:
+      operationId: getStats
+      tags: [listings]
+      summary: Get marketplace stats
+      responses:
+        "200":
+          description: Marketplace statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MarketplaceStats"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +241,337 @@ components:
       required:
         - status
 
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    Wilaya:
+      type: object
+      properties:
+        id:
+          type: integer
+        code:
+          type: integer
+        name:
+          type: string
+        nameAr:
+          type: string
+        region:
+          type: string
+        listingCount:
+          type: integer
+      required:
+        - id
+        - code
+        - name
+        - nameAr
+        - region
+        - listingCount
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        name:
+          type: string
+        nameAr:
+          type: string
+        nameFr:
+          type: string
+        icon:
+          type: string
+        description:
+          type: string
+        listingCount:
+          type: integer
+      required:
+        - id
+        - slug
+        - name
+        - nameAr
+        - nameFr
+        - icon
+        - description
+        - listingCount
+
+    Listing:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        categoryId:
+          type: integer
+        categorySlug:
+          type: string
+        categoryName:
+          type: string
+        wilayaId:
+          type: integer
+        wilayaName:
+          type: string
+        wilayaCode:
+          type: integer
+        address:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+          nullable: true
+        website:
+          type: string
+          nullable: true
+        description:
+          type: string
+        rating:
+          type: number
+        reviewCount:
+          type: integer
+        priceRange:
+          type: string
+          enum: [budget, moderate, premium, luxury]
+        coverImage:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        featured:
+          type: boolean
+        verified:
+          type: boolean
+        openingHours:
+          type: string
+          nullable: true
+        latitude:
+          type: number
+          nullable: true
+        longitude:
+          type: number
+          nullable: true
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - slug
+        - categoryId
+        - categorySlug
+        - categoryName
+        - wilayaId
+        - wilayaName
+        - wilayaCode
+        - address
+        - phone
+        - description
+        - rating
+        - reviewCount
+        - priceRange
+        - coverImage
+        - images
+        - tags
+        - featured
+        - verified
+        - createdAt
+
+    ListingDetail:
+      allOf:
+        - $ref: "#/components/schemas/Listing"
+        - type: object
+          properties:
+            services:
+              type: array
+              items:
+                $ref: "#/components/schemas/Service"
+            recentReviews:
+              type: array
+              items:
+                $ref: "#/components/schemas/Review"
+          required:
+            - services
+            - recentReviews
+
+    Service:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        nameAr:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        price:
+          type: number
+          nullable: true
+        priceMax:
+          type: number
+          nullable: true
+        duration:
+          type: string
+          nullable: true
+      required:
+        - id
+        - name
+
+    Review:
+      type: object
+      properties:
+        id:
+          type: integer
+        listingId:
+          type: integer
+        authorName:
+          type: string
+        rating:
+          type: integer
+        comment:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - listingId
+        - authorName
+        - rating
+        - comment
+        - createdAt
+
+    CreateReview:
+      type: object
+      properties:
+        authorName:
+          type: string
+        rating:
+          type: integer
+        comment:
+          type: string
+      required:
+        - authorName
+        - rating
+        - comment
+
+    CreateListing:
+      type: object
+      properties:
+        name:
+          type: string
+        categoryId:
+          type: integer
+        wilayaId:
+          type: integer
+        address:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+          nullable: true
+        website:
+          type: string
+          nullable: true
+        description:
+          type: string
+        priceRange:
+          type: string
+          enum: [budget, moderate, premium, luxury]
+        coverImage:
+          type: string
+        openingHours:
+          type: string
+          nullable: true
+      required:
+        - name
+        - categoryId
+        - wilayaId
+        - address
+        - phone
+        - description
+        - priceRange
+        - coverImage
+
+    ListingsResponse:
+      type: object
+      properties:
+        listings:
+          type: array
+          items:
+            $ref: "#/components/schemas/Listing"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - listings
+        - total
+        - page
+        - limit
+        - totalPages
+
+    SearchResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/Listing"
+        total:
+          type: integer
+        query:
+          type: string
+      required:
+        - results
+        - total
+        - query
+
+    MarketplaceStats:
+      type: object
+      properties:
+        totalListings:
+          type: integer
+        totalCategories:
+          type: integer
+        totalWilayas:
+          type: integer
+        featuredCount:
+          type: integer
+        verifiedCount:
+          type: integer
+        topCategories:
+          type: array
+          items:
+            $ref: "#/components/schemas/Category"
+        topWilayas:
+          type: array
+          items:
+            $ref: "#/components/schemas/Wilaya"
+      required:
+        - totalListings
+        - totalCategories
+        - totalWilayas
+        - featuredCount
+        - verifiedCount
+        - topCategories
+        - topWilayas

@@ -1,0 +1,19 @@
+packages:
+  "framer-motion": "For elegant page transitions and staggered reveals matching the premium aesthetic"
+  "react-hook-form": "For robust form state management"
+  "@hookform/resolvers": "For Zod validation integration with react-hook-form"
+
+images:
+  - path: "artifacts/health-beauty/public/images/hero-bg.png"
+    description: "Elegant soft feminine abstract background with rose gold and blush pink gradients, subtle flowing satin fabric texture, very light and bright"
+    aspect_ratio: "16:9"
+  - path: "artifacts/health-beauty/public/images/about-hero.png"
+    description: "Luxurious minimalist spa interior with soft warm lighting, monstera leaves, rose gold accents, serene atmosphere"
+    aspect_ratio: "16:9"
+  - path: "artifacts/health-beauty/public/images/logo.png"
+    description: "Minimalist elegant typography logo 'Jamila' in beautiful serif font, deep rose color on transparent background"
+    aspect_ratio: "3:4"
+
+notes:
+  - React Query hooks are generated in @workspace/api-client-react and return data directly.
+  - The UI relies heavily on a custom refined color palette (blush/rose/gold) tailored for a health & beauty context.

@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Jamila — Algeria Health & Beauty"
+version = "1.0.0"
+id = "artifacts/health-beauty"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18862
+
+[services.development]
+run = "pnpm --filter @workspace/health-beauty run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/health-beauty", "run", "build" ]
+publicDir = "artifacts/health-beauty/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18862"
+BASE_PATH = "/"
