@@ -9,10 +9,20 @@ import {
 import { sql } from "drizzle-orm";
 
 async function seed() {
-  console.log("Seeding database...");
+  const seedMode = process.env.SEED_MODE === "bootstrap" ? "bootstrap" : "reset";
+  console.log(`Seeding database in ${seedMode} mode...`);
 
-  // Clear existing data
-  await db.execute(sql`TRUNCATE TABLE reviews, services, listings, categories, wilayas RESTART IDENTITY CASCADE`);
+  if (seedMode === "bootstrap") {
+    const existing = await db.select().from(listingsTable).limit(1);
+    if (existing.length > 0) {
+      console.log("Bootstrap seed skipped; listings already present");
+      return;
+    }
+  }
+
+  if (seedMode === "reset") {
+    await db.execute(sql`TRUNCATE TABLE reviews, services, listings, categories, wilayas RESTART IDENTITY CASCADE`);
+  }
 
   // Seed wilayas (all 58 Algerian provinces)
   const wilayaData = [
