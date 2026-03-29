@@ -1,0 +1,21 @@
+{
+  "name": "Jamila",
+  "short_name": "Jamila Beauty",
+  "description": "Shop premium health and beauty products in Algeria. Discover skincare, haircare, cosmetics, and wellness products. Jamila is your trusted Algerian beauty marketplace.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#BE185D",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ]
+}
