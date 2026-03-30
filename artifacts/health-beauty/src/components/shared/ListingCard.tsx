@@ -27,7 +27,7 @@ export function ListingCard({ listing }: ListingCardProps) {
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
         {/* Placeholder image if coverImage fails or is an unsplash stub */}
         <img
-          src={listing.coverImage || "https://images.unsplash.com/photo-1600334129128-685054110230?w=800&q=80"}
+          src={listing.coverImage || "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&q=80"}
           alt={listing.name}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />

@@ -52,8 +52,8 @@ export function ListingDetail() {
   const defaultGallery = [
     listing.coverImage || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80",
     "https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=800&q=80",
-    "https://images.unsplash.com/photo-1600334129128-685054110230?w=800&q=80",
-    "https://images.unsplash.com/photo-1516975080661-46bdf36f59ba?w=800&q=80"
+    "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&q=80",
+    "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&q=80"
   ];
 
   const displayImages = listing.images?.length > 0 ? [listing.coverImage, ...listing.images] : defaultGallery;
